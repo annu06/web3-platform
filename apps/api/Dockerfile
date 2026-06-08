@@ -24,8 +24,8 @@ COPY package.json pnpm-workspace.yaml     ./
 COPY apps/api                             ./apps/api
 
 WORKDIR /app/apps/api
-# Remove raw .ts source files from ox (viem dep) in pnpm content-addressable store
-RUN find /app/node_modules/.pnpm -path "*/ox/src/*.ts" ! -name "*.d.ts" -delete 2>/dev/null || true
+# Remove raw .ts source files from ox (viem dep) — ships .ts that causes TS2322
+RUN find /app/node_modules/.pnpm -path "*ox@*" -name "*.ts" ! -name "*.d.ts" -delete 2>/dev/null || true
 RUN npx prisma generate && pnpm build
 
 # ──────────── Stage 3: production ──────
