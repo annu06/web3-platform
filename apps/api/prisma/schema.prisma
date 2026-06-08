@@ -1,0 +1,447 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Users & Auth
+// ─────────────────────────────────────────────────────────────
+
+model User {
+  id              String    @id @default(cuid())
+  email           String?   @unique
+  emailVerified   DateTime?
+  username        String?   @unique
+  avatar          String?
+  bio             String?
+  role            UserRole  @default(USER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  wallets         Wallet[]
+  sessions        Session[]
+  nfts            NFT[]
+  proposals       Proposal[]
+  votes           Vote[]
+  activities      ActivityFeed[]
+  notifications   Notification[]
+  stakingPositions StakingPosition[]
+  auditLogs       AuditLog[]
+  settings        UserSettings?
+
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+model Wallet {
+  id          String   @id @default(cuid())
+  address     String   @unique
+  chainId     Int      @default(1)
+  isPrimary   Boolean  @default(false)
+  ens         String?
+  createdAt   DateTime @default(now())
+  userId      String
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([address])
+  @@index([userId])
+  @@map("wallets")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  token        String   @unique
+  refreshToken String   @unique
+  walletAddress String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  userId       String
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ─────────────────────────────────────────────────────────────
+// NFTs
+// ─────────────────────────────────────────────────────────────
+
+model NFT {
+  id              String    @id @default(cuid())
+  tokenId         BigInt
+  contractAddress String
+  chainId         Int       @default(1)
+  name            String
+  description     String?
+  imageUri        String?
+  metadataUri     String
+  animationUri    String?
+  attributes      Json?
+  royaltyBps      Int       @default(500)
+  status          NFTStatus @default(UNMINTED)
+  mintedAt        DateTime?
+  mintTxHash      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  ownerId         String
+  collectionId    String?
+
+  owner           User          @relation(fields: [ownerId], references: [id])
+  collection      Collection?   @relation(fields: [collectionId], references: [id])
+  listings        NFTListing[]
+  bids            NFTBid[]
+  transfers       NFTTransfer[]
+
+  @@unique([tokenId, contractAddress, chainId])
+  @@index([ownerId])
+  @@index([collectionId])
+  @@index([status])
+  @@map("nfts")
+}
+
+enum NFTStatus {
+  UNMINTED
+  MINTED
+  LISTED
+  IN_AUCTION
+  SOLD
+  BURNED
+}
+
+model Collection {
+  id              String   @id @default(cuid())
+  name            String
+  symbol          String
+  description     String?
+  imageUri        String?
+  bannerUri       String?
+  contractAddress String?  @unique
+  chainId         Int      @default(1)
+  floorPrice      Decimal? @db.Decimal(36, 18)
+  volume24h       Decimal? @db.Decimal(36, 18)
+  totalVolume     Decimal? @db.Decimal(36, 18)
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  nfts            NFT[]
+
+  @@map("collections")
+}
+
+model NFTListing {
+  id          String        @id @default(cuid())
+  price       Decimal       @db.Decimal(36, 18)
+  currency    String        @default("ETH")
+  status      ListingStatus @default(ACTIVE)
+  txHash      String?
+  listedAt    DateTime      @default(now())
+  expiresAt   DateTime?
+  soldAt      DateTime?
+  nftId       String
+
+  nft         NFT           @relation(fields: [nftId], references: [id])
+
+  @@index([nftId])
+  @@index([status])
+  @@map("nft_listings")
+}
+
+enum ListingStatus { ACTIVE SOLD CANCELLED EXPIRED }
+
+model NFTBid {
+  id        String   @id @default(cuid())
+  amount    Decimal  @db.Decimal(36, 18)
+  currency  String   @default("ETH")
+  bidder    String
+  txHash    String?
+  status    String   @default("ACTIVE")
+  placedAt  DateTime @default(now())
+  nftId     String
+
+  nft       NFT      @relation(fields: [nftId], references: [id])
+
+  @@index([nftId])
+  @@map("nft_bids")
+}
+
+model NFTTransfer {
+  id        String   @id @default(cuid())
+  from      String
+  to        String
+  txHash    String
+  blockNum  BigInt
+  timestamp DateTime
+  nftId     String
+
+  nft       NFT      @relation(fields: [nftId], references: [id])
+
+  @@index([nftId])
+  @@map("nft_transfers")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Transactions
+// ─────────────────────────────────────────────────────────────
+
+model Transaction {
+  id          String   @id @default(cuid())
+  hash        String   @unique
+  chainId     Int      @default(1)
+  blockNumber BigInt?
+  type        String   // transfer, swap, stake, mint, vote, etc.
+  status      TxStatus @default(PENDING)
+  from        String
+  to          String?
+  value       Decimal? @db.Decimal(36, 18)
+  gasUsed     BigInt?
+  gasPrice    BigInt?
+  input       String?
+  errorMsg    String?
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+  walletId    String?
+
+  wallet      Wallet?  @relation(fields: [walletId], references: [id])
+
+  @@index([hash])
+  @@index([from])
+  @@index([walletId])
+  @@map("transactions")
+}
+
+enum TxStatus { PENDING CONFIRMED FAILED DROPPED }
+
+// ─────────────────────────────────────────────────────────────
+// DAO Governance
+// ─────────────────────────────────────────────────────────────
+
+model Proposal {
+  id              String         @id @default(cuid())
+  onChainId       String?        @unique
+  title           String
+  description     String         @db.Text
+  status          ProposalStatus @default(DRAFT)
+  type            String         @default("general")
+  targets         Json?          // contract call targets
+  values          Json?          // ETH values
+  calldatas       Json?          // encoded call data
+  ipfsHash        String?
+  forVotes        Decimal        @default(0) @db.Decimal(36, 18)
+  againstVotes    Decimal        @default(0) @db.Decimal(36, 18)
+  abstainVotes    Decimal        @default(0) @db.Decimal(36, 18)
+  quorumRequired  Decimal?       @db.Decimal(36, 18)
+  startBlock      BigInt?
+  endBlock        BigInt?
+  executedAt      DateTime?
+  cancelledAt     DateTime?
+  executionEta    DateTime?
+  txHash          String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  proposerId      String
+
+  proposer        User           @relation(fields: [proposerId], references: [id])
+  votes           Vote[]
+
+  @@index([status])
+  @@index([proposerId])
+  @@map("proposals")
+}
+
+enum ProposalStatus {
+  DRAFT
+  PENDING      // Created on-chain, not yet active
+  ACTIVE       // Voting live
+  CANCELED
+  DEFEATED
+  SUCCEEDED
+  QUEUED       // In timelock
+  EXPIRED
+  EXECUTED
+}
+
+model Vote {
+  id          String    @id @default(cuid())
+  support     VoteType
+  weight      Decimal   @db.Decimal(36, 18)
+  reason      String?
+  txHash      String?
+  castAt      DateTime  @default(now())
+  proposalId  String
+  userId      String
+
+  proposal    Proposal  @relation(fields: [proposalId], references: [id])
+  voter       User      @relation(fields: [userId], references: [id])
+
+  @@unique([proposalId, userId])
+  @@index([proposalId])
+  @@index([userId])
+  @@map("votes")
+}
+
+enum VoteType { FOR AGAINST ABSTAIN }
+
+// ─────────────────────────────────────────────────────────────
+// DeFi Staking
+// ─────────────────────────────────────────────────────────────
+
+model StakingPosition {
+  id              String   @id @default(cuid())
+  poolId          Int
+  poolName        String
+  stakedAmount    Decimal  @db.Decimal(36, 18)
+  pendingRewards  Decimal  @db.Decimal(36, 18) @default(0)
+  claimedRewards  Decimal  @db.Decimal(36, 18) @default(0)
+  apy             Decimal  @db.Decimal(8, 4)
+  stakedAt        DateTime @default(now())
+  lastClaimedAt   DateTime?
+  unstakedAt      DateTime?
+  stakeTxHash     String?
+  unstakeTxHash   String?
+  isActive        Boolean  @default(true)
+  userId          String
+
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([poolId])
+  @@map("staking_positions")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Treasury
+// ─────────────────────────────────────────────────────────────
+
+model TreasuryTransaction {
+  id          String   @id @default(cuid())
+  txHash      String   @unique
+  type        String   // deposit, withdrawal, allocation
+  token       String   @default("ETH")
+  amount      Decimal  @db.Decimal(36, 18)
+  from        String?
+  to          String?
+  note        String?
+  executedAt  DateTime @default(now())
+  proposalId  String?
+
+  @@index([type])
+  @@map("treasury_transactions")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Notifications & Activity
+// ─────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  userId    String
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  TXN_CONFIRMED
+  TXN_FAILED
+  NFT_SOLD
+  NFT_BID
+  PROPOSAL_CREATED
+  PROPOSAL_EXECUTED
+  REWARD_AVAILABLE
+  SYSTEM
+}
+
+model ActivityFeed {
+  id        String   @id @default(cuid())
+  action    String
+  metadata  Json?
+  txHash    String?
+  createdAt DateTime @default(now())
+  userId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("activity_feed")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Analytics
+// ─────────────────────────────────────────────────────────────
+
+model DailySnapshot {
+  id            String   @id @default(cuid())
+  date          DateTime @unique @db.Date
+  tvl           Decimal  @db.Decimal(36, 18) @default(0)
+  totalStaked   Decimal  @db.Decimal(36, 18) @default(0)
+  nftVolume     Decimal  @db.Decimal(36, 18) @default(0)
+  uniqueTraders Int      @default(0)
+  newUsers      Int      @default(0)
+  txCount       Int      @default(0)
+  tokenPrice    Decimal? @db.Decimal(18, 8)
+  marketCap     Decimal? @db.Decimal(36, 18)
+
+  @@map("daily_snapshots")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Audit & Settings
+// ─────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String?
+  before    Json?
+  after     Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  userId    String?
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
+
+model UserSettings {
+  id                    String  @id @default(cuid())
+  emailNotifications    Boolean @default(true)
+  pushNotifications     Boolean @default(false)
+  darkMode              Boolean @default(true)
+  language              String  @default("en")
+  defaultSlippage       Decimal @default(0.5) @db.Decimal(4, 2)
+  expertMode            Boolean @default(false)
+  gasPreference         String  @default("standard")
+  userId                String  @unique
+
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
