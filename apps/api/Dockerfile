@@ -24,6 +24,10 @@ RUN npx prisma generate && pnpm build
 WORKDIR /app
 RUN pnpm deploy --filter @web3/api --prod /app/deployed
 
+# Re-generate Prisma client inside the deployed node_modules
+WORKDIR /app/deployed
+RUN npx prisma generate --schema=./prisma/schema.prisma
+
 # ──────────── Stage 2: production ──────
 FROM node:20-alpine AS production
 WORKDIR /app
