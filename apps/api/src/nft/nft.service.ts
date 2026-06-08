@@ -32,7 +32,7 @@ export class NftService {
         collection: true,
         listings:   { where: { isActive: true } },
         bids:       { orderBy: { amount: "desc" }, take: 10 },
-        transfers:  { orderBy: { createdAt: "desc" }, take: 20 },
+        transfers:  { orderBy: { timestamp: "desc" }, take: 20 },
       },
     });
     if (!nft) throw new NotFoundException("NFT not found");
@@ -100,7 +100,7 @@ export class NftService {
       this.prisma.nFTListing.findMany({
         where: { isActive: true },
         skip, take: limit,
-        orderBy: { createdAt: "desc" },
+        orderBy: { listedAt: "desc" },
         include: { nft: { include: { collection: true } } },
       }),
       this.prisma.nFTListing.count({ where: { isActive: true } }),

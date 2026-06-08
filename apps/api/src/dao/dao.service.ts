@@ -25,7 +25,7 @@ export class DaoService {
       where:   { id },
       include: {
         votes: {
-          orderBy: { createdAt: "desc" },
+          orderBy: { castAt: "desc" },
           take:    100,
           include: { user: { select: { id: true } } },
         },
@@ -65,7 +65,7 @@ export class DaoService {
   async getUserVotes(userId: string) {
     return this.prisma.vote.findMany({
       where:   { userId },
-      orderBy: { createdAt: "desc" },
+      orderBy: { castAt: "desc" },
       include: { proposal: { select: { id: true, title: true, status: true } } },
     });
   }
