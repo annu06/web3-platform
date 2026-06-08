@@ -1,6 +1,6 @@
 {
-  "installCommand": "npm install -g pnpm@9 && pnpm install",
-  "buildCommand": "pnpm --filter @web3/web build",
+  "installCommand": "npm install -g pnpm@9 && pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm --filter @web3/web... build",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
   "rewrites": [
