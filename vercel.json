@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.web3platform.up.railway.app/api/:path*"
+      "destination": "https://web3-platform-api-production.up.railway.app/api/:path*"
     }
   ],
   "headers": [
