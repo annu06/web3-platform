@@ -1,171 +1,134 @@
 "use client";
 
-import React from "react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Wallet, Coins, BarChart3 } from "lucide-react";
+import { motion } from "framer-motion";
+import { ExternalLink, Github, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
-const STEPS = [
+const PROJECTS = [
   {
-    step: "01",
-    icon: Wallet,
-    title: "Connect Your Wallet",
-    description:
-      "Use MetaMask, Coinbase Wallet, or any WalletConnect-compatible wallet. Sign in with Ethereum — no email, no password.",
-    color: "text-brand-400",
-    iconBg: "bg-brand-500/12",
-    iconBorder: "border-brand-500/25",
-    glow: "rgba(59,130,246,0.3)",
-    gradientFrom: "#3b82f6",
+    num: "01",
+    title: "Web3 Platform",
+    subtitle: "DeFi · NFT Marketplace · DAO Governance",
+    desc: "Production-grade Web3 platform with ERC-20 staking (PLT token), ERC-721 NFT marketplace, and on-chain DAO governance. Full-stack monorepo with NestJS API and Next.js 15 frontend.",
+    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&auto=format&fit=crop&q=80",
+    tags: [
+      { label: "Next.js 15", cls: "chip-emerald" },
+      { label: "Solidity", cls: "chip-orange" },
+      { label: "NestJS", cls: "chip-violet" },
+      { label: "Wagmi", cls: "chip-blue" },
+    ],
+    liveUrl: "https://web-green-ten-88.vercel.app",
+    githubUrl: "https://github.com/AnuraagChetia/web3-platform",
+    gradient: "from-emerald-500/10 to-cyan-500/10",
+    border: "hover:border-emerald-400/40",
+    glow: "rgba(78,222,163,0.08)",
   },
   {
-    step: "02",
-    icon: Coins,
-    title: "Acquire PLT Tokens",
-    description:
-      "Stake ETH or LP tokens to earn PLT. Use PLT to vote in the DAO, access premium features, and earn yield in staking vaults.",
-    color: "text-violet-400",
-    iconBg: "bg-violet-500/12",
-    iconBorder: "border-violet-500/25",
-    glow: "rgba(124,58,237,0.3)",
-    gradientFrom: "#7c3aed",
+    num: "02",
+    title: "DevCommand CRM",
+    subtitle: "Portfolio · Lead Management · Admin Dashboard",
+    desc: "Full-stack developer portfolio with integrated CRM for managing inbound leads. Features admin dashboard with content management for projects, blog posts, skills, and testimonials.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+    tags: [
+      { label: "Next.js", cls: "chip-blue" },
+      { label: "PostgreSQL", cls: "chip-cyan" },
+      { label: "Prisma", cls: "chip-teal" },
+      { label: "NextAuth", cls: "chip-violet" },
+    ],
+    liveUrl: "#",
+    githubUrl: "https://github.com/AnuraagChetia",
+    gradient: "from-sky-500/10 to-indigo-500/10",
+    border: "hover:border-sky-400/40",
+    glow: "rgba(56,189,248,0.08)",
   },
   {
-    step: "03",
-    icon: BarChart3,
-    title: "Earn, Trade & Govern",
-    description:
-      "Farm yield in DeFi pools, mint or trade NFTs in the marketplace, and participate in on-chain DAO governance to shape the platform.",
-    color: "text-cyan-400",
-    iconBg: "bg-cyan-500/12",
-    iconBorder: "border-cyan-500/25",
-    glow: "rgba(34,211,238,0.3)",
-    gradientFrom: "#22d3ee",
+    num: "03",
+    title: "Quantum Ledger",
+    subtitle: "Fintech · Real-time Data · Institutional Grade",
+    desc: "High-performance fintech dashboard for institutional traders. Custom HTML5 Canvas engine for charts, WebSocket message batching, and sub-millisecond latency data streams.",
+    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80",
+    tags: [
+      { label: "TypeScript", cls: "chip-blue" },
+      { label: "WebSockets", cls: "chip-emerald" },
+      { label: "D3.js", cls: "chip-orange" },
+      { label: "GraphQL", cls: "chip-pink" },
+    ],
+    liveUrl: "#",
+    githubUrl: "https://github.com/AnuraagChetia",
+    gradient: "from-violet-500/10 to-pink-500/10",
+    border: "hover:border-violet-400/40",
+    glow: "rgba(167,139,250,0.08)",
   },
 ];
 
 export function HowItWorks() {
-  const lineRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(lineRef, { once: true, margin: "-80px" });
-
   return (
-    <section className="py-28 px-4 sm:px-6 relative overflow-hidden section-divider">
-      {/* Background */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "rgba(255,255,255,0.012)" }}
-      />
-      <div className="absolute inset-0 dot-grid-bg opacity-40 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-brand-500/[0.04] blur-3xl pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-20"
-        >
-          <span className="badge-blue mb-4 inline-block">How It Works</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 leading-tight">
-            Three Steps to the{" "}
-            <span className="gradient-text">Decentralized Economy</span>
-          </h2>
-          <p className="text-white/40 mt-4 max-w-xl mx-auto">
-            Get started in minutes. No KYC, no sign-up, no custody. Just connect and go.
-          </p>
-        </motion.div>
-
-        <div className="relative">
-          {/* Animated connector line (desktop) */}
-          <div
-            ref={lineRef}
-            className="hidden sm:block absolute top-[52px] left-[calc(16.66%+40px)] right-[calc(16.66%+40px)] h-px overflow-hidden"
-          >
-            {/* Base line */}
-            <div className="absolute inset-0 bg-white/[0.06]" />
-            {/* Animated fill */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                originX: 0,
-                background: "linear-gradient(90deg, #3b82f6, #7c3aed, #22d3ee)",
-              }}
-              className="absolute inset-0"
-            />
-            {/* Moving dot */}
-            <motion.div
-              initial={{ left: "0%" }}
-              animate={inView ? { left: "100%" } : { left: "0%" }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white shadow-sm"
-              style={{ boxShadow: "0 0 8px rgba(255,255,255,0.8)" }}
-            />
+    <section className="py-24 lg:py-32 bg-[#0a0d14]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <div className="section-label mb-3">02 / Portfolio</div>
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight">
+              Selected <span className="gradient-text-violet">Works</span>
+            </h2>
+            <p className="mt-4 text-slate-400 max-w-xl leading-relaxed">
+              A curated selection of engineering projects that showcase technical depth,
+              creative precision, and real-world impact.
+            </p>
           </div>
+          <Link href="/projects" className="text-sm font-mono text-emerald-400 hover:underline whitespace-nowrap flex items-center gap-1">
+            View all projects <ArrowRight size={13} />
+          </Link>
+        </div>
 
-          <div className="grid sm:grid-cols-3 gap-10 sm:gap-8">
-            {STEPS.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <motion.div
-                  key={s.step}
-                  initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{ delay: i * 0.18, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-center group relative"
-                >
-                  {/* Icon circle */}
-                  <div className="relative inline-block mb-6">
-                    {/* Glow ring */}
-                    <motion.div
-                      animate={{
-                        opacity: [0.2, 0.5, 0.2],
-                        scale: [1, 1.15, 1],
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.8 }}
-                      className="absolute -inset-3 rounded-full blur-xl pointer-events-none"
-                      style={{ background: s.glow }}
-                    />
+        {/* Project cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {PROJECTS.map((project, i) => (
+            <motion.article
+              key={project.num}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ delay: i * 0.12 }}
+              className={`group relative bg-gradient-to-br ${project.gradient} rounded-2xl border border-[#1e293b] ${project.border} transition-all duration-300 overflow-hidden flex flex-col`}
+              style={{ boxShadow: `0 0 40px ${project.glow}` }}
+              whileHover={{ y: -4, boxShadow: `0 20px 60px ${project.glow}` }}
+            >
+              {/* Image */}
+              <div className="aspect-video overflow-hidden relative">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-[#0a0d14]/20 to-transparent" />
+                <div className="absolute top-3 left-3 font-mono text-xs text-slate-500 bg-[#0a0d14]/70 px-2 py-1 rounded">{project.num}</div>
+              </div>
 
-                    {/* Icon container */}
-                    <motion.div
-                      whileHover={{ scale: 1.05, rotate: -4 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                      className={`relative w-24 h-24 rounded-2xl ${s.iconBg} border ${s.iconBorder} flex items-center justify-center`}
-                      style={{ boxShadow: `0 0 0 1px ${s.iconBorder}, 0 8px 24px rgba(0,0,0,0.4)` }}
-                    >
-                      <Icon className={`w-9 h-9 ${s.color}`} />
-                    </motion.div>
-
-                    {/* Step badge */}
-                    <div
-                      className="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold shadow-lg"
-                      style={{ background: `linear-gradient(135deg, ${s.gradientFrom}, rgba(124,58,237,0.9))` }}
-                    >
-                      {s.step}
-                    </div>
+              {/* Content */}
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:gradient-text transition-all">{project.title}</h3>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#1e293b] text-slate-500 hover:text-slate-100 transition-all">
+                      <Github size={12} />
+                    </a>
+                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#1e293b] text-slate-500 hover:text-emerald-400 transition-all">
+                      <ExternalLink size={12} />
+                    </a>
                   </div>
-
-                  <h3 className="text-white font-semibold text-lg mb-3">{s.title}</h3>
-                  <p className="text-white/45 text-sm leading-relaxed max-w-xs mx-auto">
-                    {s.description}
-                  </p>
-
-                  {/* Mobile arrow */}
-                  {i < STEPS.length - 1 && (
-                    <div className="sm:hidden mt-8 flex justify-center">
-                      <svg className="w-5 h-5 text-white/15 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+                </div>
+                <p className="text-xs font-mono text-slate-500 mb-3">{project.subtitle}</p>
+                <p className="text-sm text-slate-400 leading-relaxed flex-grow">{project.desc}</p>
+                <div className="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-[#1e293b]/60">
+                  {project.tags.map(({ label, cls }) => (
+                    <span key={label} className={`chip ${cls}`}>{label}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>

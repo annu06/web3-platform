@@ -1,180 +1,48 @@
 "use client";
 
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { TrendingUp, Users, Image, Vote, DollarSign } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const STATS = [
-  {
-    icon: DollarSign,
-    label: "Total Value Locked",
-    prefix: "$",
-    suffix: "M",
-    value: 48.2,
-    integerOnly: false,
-    decimals: 1,
-    change: "+12.4%",
-    positive: true,
-    color: "text-brand-400",
-    iconBg: "bg-brand-500/15",
-  },
-  {
-    icon: Image,
-    label: "NFTs Minted",
-    prefix: "",
-    suffix: "",
-    value: 24800,
-    integerOnly: true,
-    decimals: 0,
-    change: "3 collections",
-    positive: null,
-    color: "text-violet-400",
-    iconBg: "bg-violet-500/15",
-  },
-  {
-    icon: Users,
-    label: "Active Stakers",
-    prefix: "",
-    suffix: "",
-    value: 6420,
-    integerOnly: true,
-    decimals: 0,
-    change: "+891 this week",
-    positive: true,
-    color: "text-accent-cyan",
-    iconBg: "bg-cyan-500/15",
-  },
-  {
-    icon: Vote,
-    label: "DAO Proposals",
-    prefix: "",
-    suffix: "",
-    value: 142,
-    integerOnly: true,
-    decimals: 0,
-    change: "91% participation",
-    positive: true,
-    color: "text-accent-green",
-    iconBg: "bg-green-500/15",
-  },
-  {
-    icon: TrendingUp,
-    label: "PLT Token Price",
-    prefix: "$",
-    suffix: "",
-    value: 2.84,
-    integerOnly: false,
-    decimals: 2,
-    change: "+8.3% 24h",
-    positive: true,
-    color: "text-orange-400",
-    iconBg: "bg-orange-500/15",
-  },
+  { value: 5, suffix: "+", label: "Years Experience", sublabel: "Building production apps", gradient: "from-emerald-400/20 to-cyan-400/20", border: "border-t-emerald-400/60", glow: "rgba(78,222,163,0.12)" },
+  { value: 30, suffix: "+", label: "Projects Shipped", sublabel: "From idea to production", gradient: "from-sky-400/20 to-blue-400/20", border: "border-t-sky-400/60", glow: "rgba(56,189,248,0.12)" },
+  { value: 20, suffix: "+", label: "Happy Clients", sublabel: "Across 8 countries", gradient: "from-violet-400/20 to-purple-400/20", border: "border-t-violet-400/60", glow: "rgba(167,139,250,0.12)" },
+  { value: 100, suffix: "%", label: "Delivery Rate", sublabel: "On time, on spec", gradient: "from-pink-400/20 to-rose-400/20", border: "border-t-pink-400/60", glow: "rgba(244,114,182,0.12)" },
 ];
 
-function StatCard({
-  stat,
-  index,
-}: {
-  stat: typeof STATS[0];
-  index: number;
-}) {
-  const { value, ref } = useCountUp(
-    stat.integerOnly ? stat.value : Math.round(stat.value * Math.pow(10, stat.decimals)),
-    1800
-  );
-
-  const displayValue = stat.integerOnly
-    ? value.toLocaleString()
-    : (value / Math.pow(10, stat.decimals)).toFixed(stat.decimals);
-
-  const Icon = stat.icon;
-
+function StatCard({ stat, index }: { stat: typeof STATS[number]; index: number }) {
+  const { value, ref } = useCountUp(stat.value, 1600);
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 16 }}
+      ref={ref as React.RefObject<HTMLDivElement>}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: index * 0.09, duration: 0.45 }}
-      className="relative group"
+      transition={{ delay: index * 0.1 }}
+      className={`relative p-6 rounded-2xl bg-gradient-to-br ${stat.gradient} border border-[#1e293b] border-t-2 ${stat.border} overflow-hidden group hover:scale-[1.02] transition-all duration-300`}
+      style={{ boxShadow: `0 0 30px ${stat.glow}` }}
     >
-      {/* Gradient top border */}
-      <div
-        className="absolute top-0 left-4 right-4 h-px rounded-full"
-        style={{
-          background:
-            index % 2 === 0
-              ? "linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent)"
-              : "linear-gradient(90deg, transparent, rgba(124,58,237,0.6), transparent)",
-        }}
-      />
-
-      <div className="flex items-center gap-4 px-2 py-5">
-        {/* Icon */}
-        <div className={`w-10 h-10 rounded-xl ${stat.iconBg} flex items-center justify-center shrink-0`}>
-          <Icon className={`w-5 h-5 ${stat.color}`} />
+      <div className="relative z-10">
+        <div className="text-4xl font-black text-slate-100 tabular-nums">
+          {value}<span className="text-3xl">{stat.suffix}</span>
         </div>
-
-        {/* Text */}
-        <div className="min-w-0">
-          <div className="flex items-baseline gap-1 mb-0.5">
-            <span className={`text-2xl font-bold ${stat.color} leading-none`}>
-              {stat.prefix}{displayValue}{stat.suffix}
-            </span>
-          </div>
-          <p className="text-white/60 text-xs font-medium truncate">{stat.label}</p>
-          <p
-            className={`text-[11px] font-medium mt-0.5 ${
-              stat.positive === true
-                ? "text-accent-green"
-                : stat.positive === false
-                ? "text-red-400"
-                : "text-white/30"
-            }`}
-          >
-            {stat.positive === true && "↑ "}
-            {stat.change}
-          </p>
-        </div>
+        <div className="mt-2 text-sm font-semibold text-slate-200">{stat.label}</div>
+        <div className="text-xs text-slate-500 mt-0.5 font-mono">{stat.sublabel}</div>
       </div>
     </motion.div>
   );
 }
 
 export function StatsBar() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true });
 
   return (
-    <section
-      ref={ref}
-      className="relative border-y section-divider overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.015)" }}
-    >
-      {/* Subtle gradient bands */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 100% at 20% 50%, rgba(59,130,246,0.04) 0%, transparent 60%), radial-gradient(ellipse 60% 100% at 80% 50%, rgba(124,58,237,0.04) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Live indicator */}
-        <div className="flex items-center justify-center pt-4 mb-1">
-          <div className="flex items-center gap-1.5 text-[11px] text-white/30 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse" />
-            Live Platform Metrics
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-white/[0.05]">
-          {STATS.map((stat, i) => (
-            <StatCard key={stat.label} stat={stat} index={i} />
-          ))}
+    <section ref={ref} className="py-16 border-y border-[#1e293b]/60 bg-[#0f172a]/40">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          {STATS.map((stat, i) => <StatCard key={stat.label} stat={stat} index={i} />)}
         </div>
       </div>
     </section>

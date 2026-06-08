@@ -1,237 +1,129 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, Lock, Code2, Bug, CheckCircle2, FileCheck } from "lucide-react";
 
-const SECURITY_METRICS = [
+const TIMELINE = [
   {
-    icon: ShieldCheck,
-    value: "100%",
-    label: "Test Coverage",
-    sub: "All critical paths covered",
+    year: "2024 – Present",
+    title: "Senior Full-Stack Engineer",
+    org: "Freelance / Remote",
     color: "text-emerald-400",
-    iconBg: "bg-emerald-500/12",
-    iconBorder: "border-emerald-500/20",
-    glow: "rgba(16,185,129,0.15)",
+    dot: "bg-emerald-400",
+    desc: "Building Web3 platforms, DeFi protocols, and enterprise SaaS products. Specialising in Next.js 15, NestJS microservices, Solidity smart contracts, and Wagmi v2 integrations.",
+    chips: [
+      { label: "Web3", cls: "chip-orange" },
+      { label: "Next.js 15", cls: "chip-emerald" },
+      { label: "NestJS", cls: "chip-violet" },
+    ],
   },
   {
-    icon: Bug,
-    value: "0",
-    label: "Critical Vulnerabilities",
-    sub: "Post-audit clean bill of health",
-    color: "text-brand-400",
-    iconBg: "bg-brand-500/12",
-    iconBorder: "border-brand-500/20",
-    glow: "rgba(59,130,246,0.15)",
+    year: "2023 – 2024",
+    title: "Full-Stack Developer",
+    org: "Startup (Confidential)",
+    color: "text-sky-400",
+    dot: "bg-sky-400",
+    desc: "Led frontend architecture for a B2B fintech dashboard serving 10k+ users. Implemented real-time WebSocket data feeds, custom charting engine in Canvas, and role-based access control.",
+    chips: [
+      { label: "TypeScript", cls: "chip-blue" },
+      { label: "React", cls: "chip-blue" },
+      { label: "WebSockets", cls: "chip-cyan" },
+    ],
   },
   {
-    icon: Code2,
-    value: "4,200+",
-    label: "Lines of Solidity",
-    sub: "Across 6 production contracts",
+    year: "2022 – 2023",
+    title: "Backend Engineer",
+    org: "Product Agency",
     color: "text-violet-400",
-    iconBg: "bg-violet-500/12",
-    iconBorder: "border-violet-500/20",
-    glow: "rgba(124,58,237,0.15)",
+    dot: "bg-violet-400",
+    desc: "Designed and shipped 12+ REST & GraphQL APIs using NestJS and PostgreSQL. Built event-driven microservices with Redis Pub/Sub and established CI/CD pipelines with GitHub Actions.",
+    chips: [
+      { label: "NestJS", cls: "chip-violet" },
+      { label: "PostgreSQL", cls: "chip-teal" },
+      { label: "GraphQL", cls: "chip-pink" },
+    ],
   },
   {
-    icon: Lock,
-    value: "2-Day",
-    label: "TimeLock Delay",
-    sub: "Protects against flash-loan attacks",
-    color: "text-cyan-400",
-    iconBg: "bg-cyan-500/12",
-    iconBorder: "border-cyan-500/20",
-    glow: "rgba(34,211,238,0.15)",
+    year: "2020 – 2022",
+    title: "Frontend Developer",
+    org: "Digital Studio",
+    color: "text-pink-400",
+    dot: "bg-pink-400",
+    desc: "Crafted pixel-perfect, accessible UIs for e-commerce and marketing clients. Introduced TypeScript and React to the team, cutting average page load times by 40%.",
+    chips: [
+      { label: "React", cls: "chip-blue" },
+      { label: "Tailwind", cls: "chip-cyan" },
+      { label: "GSAP", cls: "chip-orange" },
+    ],
   },
-];
-
-const AUDIT_FEATURES = [
-  "Re-entrancy protection on all state-changing functions",
-  "OpenZeppelin battle-tested contract standards",
-  "Overflow/underflow protected via Solidity 0.8+",
-  "Multi-sig treasury requiring N-of-M keyholders",
-  "TimeLock governor — 48-hour governance delay",
-  "SIWE JWT with rolling refresh token rotation",
-];
-
-const AUDITOR_BADGES = [
-  { name: "CertiK", color: "#FFD700", icon: "🛡" },
-  { name: "OpenZeppelin", color: "#4F46E5", icon: "🔒" },
-  { name: "Quantstamp", color: "#10B981", icon: "✓" },
 ];
 
 export function SecuritySection() {
   return (
-    <section className="py-28 px-4 sm:px-6 relative overflow-hidden section-divider">
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(255,255,255,0.015)" }} />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 100%, rgba(16,185,129,0.05) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto">
-        {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="badge-green mb-4 inline-block">Security First</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 leading-tight">
-            Audited, Tested &{" "}
-            <span className="gradient-text-cyan">Battle-Hardened</span>
-          </h2>
-          <p className="text-white/45 mt-5 max-w-2xl mx-auto text-lg">
-            Every smart contract is audited, every function is tested, and every vulnerability
-            is patched before a single wei touches the protocol.
-          </p>
-        </motion.div>
-
-        {/* Security metrics grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-          {SECURITY_METRICS.map((metric, i) => {
-            const Icon = metric.icon;
-            return (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="group relative rounded-2xl p-6 overflow-hidden cursor-default"
-                style={{
-                  background: "linear-gradient(145deg, rgba(12,16,24,0.95), rgba(8,11,20,0.8))",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-                whileHover={{
-                  y: -2,
-                  borderColor: "rgba(255,255,255,0.12)",
-                  boxShadow: `0 16px 40px rgba(0,0,0,0.4), 0 0 20px ${metric.glow}`,
-                }}
-              >
-                {/* Background glow */}
-                <div
-                  className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full blur-2xl opacity-30 pointer-events-none"
-                  style={{ background: metric.glow }}
-                />
-
-                <div className={`w-11 h-11 rounded-xl ${metric.iconBg} border ${metric.iconBorder} flex items-center justify-center mb-4`}>
-                  <Icon className={`w-5 h-5 ${metric.color}`} />
-                </div>
-
-                <p className={`text-3xl font-bold ${metric.color} mb-1`}>{metric.value}</p>
-                <p className="text-white font-semibold text-sm mb-1">{metric.label}</p>
-                <p className="text-white/35 text-xs leading-relaxed">{metric.sub}</p>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Two columns: features list + auditors */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Audit features checklist */}
+    <section className="py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Left — heading */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-2xl p-7"
-            style={{
-              background: "linear-gradient(145deg, rgba(12,16,24,0.95), rgba(8,11,20,0.8))",
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
+            viewport={{ once: true }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/12 border border-emerald-500/20 flex items-center justify-center">
-                <FileCheck className="w-4 h-4 text-emerald-400" />
-              </div>
-              <h3 className="text-white font-semibold text-base">Security Guarantees</h3>
-            </div>
-            <div className="space-y-3">
-              {AUDIT_FEATURES.map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 + i * 0.06 }}
-                  className="flex items-start gap-3"
-                >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-white/60 text-sm">{feature}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            <div className="section-label mb-3">03 / Experience</div>
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight">
+              Technical <span className="gradient-text-pink">Journey</span>
+            </h2>
+            <p className="mt-6 text-slate-400 leading-relaxed max-w-md">
+              Five years of deliberate craft — growing from frontend finesse to full-stack
+              engineering leadership across Web2 and Web3 domains.
+            </p>
 
-          {/* Audit partners + bug bounty */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col gap-4"
-          >
-            {/* Auditor badges */}
-            <div
-              className="rounded-2xl p-7 flex-1"
-              style={{
-                background: "linear-gradient(145deg, rgba(12,16,24,0.95), rgba(8,11,20,0.8))",
-                border: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
-              <h3 className="text-white font-semibold text-base mb-6">Audit Partners</h3>
-              <div className="flex flex-wrap gap-3">
-                {AUDITOR_BADGES.map((auditor) => (
-                  <div
-                    key={auditor.name}
-                    className="flex items-center gap-2.5 px-4 py-3 rounded-xl"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.09)",
-                    }}
-                  >
-                    <span className="text-lg">{auditor.icon}</span>
-                    <span className="text-white/80 text-sm font-medium">{auditor.name}</span>
-                    <span className="badge-green text-[10px]">Passed</span>
+            {/* Highlight box */}
+            <div className="mt-10 p-6 rounded-2xl border border-[#1e293b] bg-gradient-to-br from-emerald-500/5 to-cyan-500/5">
+              <div className="text-2xl font-black gradient-text">5+ Years</div>
+              <div className="text-sm text-slate-400 mt-1">of production engineering</div>
+              <div className="grid grid-cols-2 gap-4 mt-5">
+                {[
+                  { n: "30+", label: "Projects shipped" },
+                  { n: "20+", label: "Happy clients" },
+                  { n: "12+", label: "APIs designed" },
+                  { n: "8+", label: "Countries served" },
+                ].map(({ n, label }) => (
+                  <div key={label}>
+                    <div className="text-lg font-bold text-slate-100">{n}</div>
+                    <div className="text-xs text-slate-500 font-mono">{label}</div>
                   </div>
                 ))}
               </div>
-
-              <p className="text-white/30 text-xs mt-5 leading-relaxed">
-                All contracts audited prior to mainnet deployment. Audit reports are publicly
-                available in the GitHub repository.
-              </p>
-            </div>
-
-            {/* Bug bounty */}
-            <div
-              className="rounded-2xl p-6"
-              style={{
-                background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(124,58,237,0.06))",
-                border: "1px solid rgba(59,130,246,0.2)",
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-semibold text-sm mb-1">Bug Bounty Program</p>
-                  <p className="text-white/45 text-xs">Responsible disclosure earns up to</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold gradient-text">$50K</p>
-                  <p className="text-white/30 text-xs">max payout</p>
-                </div>
-              </div>
             </div>
           </motion.div>
+
+          {/* Right — Timeline */}
+          <div className="relative">
+            <div className="absolute left-[7px] top-2 bottom-0 w-px bg-gradient-to-b from-emerald-400/30 via-violet-400/20 to-transparent" />
+            <div className="space-y-10">
+              {TIMELINE.map((item, i) => (
+                <motion.div
+                  key={item.year}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ delay: i * 0.1 }}
+                  className="relative pl-8"
+                >
+                  <div className={`absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full ${item.dot} ring-4 ring-[#0a0d14]`} />
+                  <div className={`text-xs font-mono mb-1 ${item.color}`}>{item.year}</div>
+                  <h3 className="text-base font-bold text-slate-100">{item.title}</h3>
+                  <div className="text-sm text-slate-500 mb-3">{item.org}</div>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-3">{item.desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.chips.map(({ label, cls }) => (
+                      <span key={label} className={`chip ${cls}`}>{label}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

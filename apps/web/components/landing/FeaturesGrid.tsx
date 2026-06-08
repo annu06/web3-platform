@@ -1,160 +1,125 @@
 "use client";
 
-import React from "react";
 import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
-import { TrendingUp, Image, Vote, Shield, Zap, Globe } from "lucide-react";
+import { Monitor, Server, Cloud, Cpu } from "lucide-react";
 
-const FEATURES = [
+const CATEGORIES = [
   {
-    icon: TrendingUp,
-    title: "DeFi Yield Farming",
-    description:
-      "Stake PLT tokens in multi-pool vaults modeled after Masterchef. Earn compounding rewards with transparent, audited smart contracts.",
-    badge: "Live",
-    badgeClass: "badge-blue",
-    color: "text-brand-400",
-    iconBg: "bg-brand-500/12",
-    iconBorder: "border-brand-500/20",
-    spotlightColor: "rgba(59,130,246,0.14)",
-    borderHover: "rgba(59,130,246,0.4)",
+    icon: Monitor,
+    title: "Frontend",
+    counter: "01",
+    colorClass: "text-sky-400",
+    borderHover: "hover:border-sky-400/40",
+    iconBg: "bg-sky-400/10",
+    iconHover: "group-hover:bg-sky-400 group-hover:text-sky-950",
+    spotlight: "rgba(56, 189, 248, 0.06)",
+    chips: [
+      { label: "React / Next.js", cls: "chip-blue" },
+      { label: "TypeScript", cls: "chip-blue" },
+      { label: "Tailwind CSS", cls: "chip-cyan" },
+      { label: "Framer Motion", cls: "chip-cyan" },
+      { label: "RainbowKit", cls: "chip-blue" },
+      { label: "Recharts", cls: "chip-blue" },
+    ],
+    desc: "Pixel-perfect UIs with silky animations and zero compromise on performance.",
   },
   {
-    icon: Image,
-    title: "NFT Marketplace",
-    description:
-      "Mint ERC-721 NFTs with on-chain royalties. List at fixed price or auction with anti-sniping protection built into the contract.",
-    badge: "Live",
-    badgeClass: "badge-purple",
-    color: "text-violet-400",
-    iconBg: "bg-violet-500/12",
-    iconBorder: "border-violet-500/20",
-    spotlightColor: "rgba(124,58,237,0.14)",
-    borderHover: "rgba(124,58,237,0.4)",
+    icon: Server,
+    title: "Backend",
+    counter: "02",
+    colorClass: "text-emerald-400",
+    borderHover: "hover:border-emerald-400/40",
+    iconBg: "bg-emerald-400/10",
+    iconHover: "group-hover:bg-emerald-400 group-hover:text-emerald-950",
+    spotlight: "rgba(78, 222, 163, 0.06)",
+    chips: [
+      { label: "NestJS", cls: "chip-emerald" },
+      { label: "Node.js", cls: "chip-emerald" },
+      { label: "PostgreSQL", cls: "chip-teal" },
+      { label: "Prisma ORM", cls: "chip-teal" },
+      { label: "Redis", cls: "chip-emerald" },
+      { label: "REST / GraphQL", cls: "chip-teal" },
+    ],
+    desc: "Scalable microservices and APIs built for reliability under heavy load.",
   },
   {
-    icon: Vote,
-    title: "DAO Governance",
-    description:
-      "Vote on proposals with your staked PLT. A 2-day TimeLock protects against flash-loan attacks. On-chain, transparent, permissionless.",
-    badge: "Live",
-    badgeClass: "badge-cyan",
-    color: "text-cyan-400",
-    iconBg: "bg-cyan-500/12",
-    iconBorder: "border-cyan-500/20",
-    spotlightColor: "rgba(34,211,238,0.12)",
-    borderHover: "rgba(34,211,238,0.4)",
+    icon: Cpu,
+    title: "Web3 / Blockchain",
+    counter: "03",
+    colorClass: "text-orange-400",
+    borderHover: "hover:border-orange-400/40",
+    iconBg: "bg-orange-400/10",
+    iconHover: "group-hover:bg-orange-400 group-hover:text-orange-950",
+    spotlight: "rgba(251, 146, 60, 0.06)",
+    chips: [
+      { label: "Solidity", cls: "chip-orange" },
+      { label: "Hardhat", cls: "chip-amber" },
+      { label: "Ethers.js", cls: "chip-orange" },
+      { label: "Wagmi v2", cls: "chip-amber" },
+      { label: "ERC-20 / ERC-721", cls: "chip-orange" },
+      { label: "OpenZeppelin", cls: "chip-amber" },
+    ],
+    desc: "Production-grade smart contracts, DeFi protocols, and NFT marketplaces.",
   },
   {
-    icon: Shield,
-    title: "MultiSig Treasury",
-    description:
-      "N-of-M multi-signature wallet guards platform funds. All treasury actions require on-chain confirmation from a threshold of keyholders.",
-    badge: "Live",
-    badgeClass: "badge-green",
-    color: "text-emerald-400",
-    iconBg: "bg-emerald-500/12",
-    iconBorder: "border-emerald-500/20",
-    spotlightColor: "rgba(16,185,129,0.12)",
-    borderHover: "rgba(16,185,129,0.4)",
-  },
-  {
-    icon: Zap,
-    title: "SIWE Authentication",
-    description:
-      "Sign-In With Ethereum — no passwords, no custodians. Your wallet is your identity. JWT sessions with rolling refresh token rotation.",
-    badge: "Secure",
-    badgeClass: "badge-orange",
-    color: "text-yellow-400",
-    iconBg: "bg-yellow-500/12",
-    iconBorder: "border-yellow-500/20",
-    spotlightColor: "rgba(234,179,8,0.12)",
-    borderHover: "rgba(234,179,8,0.4)",
-  },
-  {
-    icon: Globe,
-    title: "Multi-Chain Ready",
-    description:
-      "Mainnet, Sepolia, Polygon, Arbitrum, Base, and Optimism — all pre-configured. Switch chains in your wallet, the UI adapts instantly.",
-    badge: "6 Chains",
-    badgeClass: "badge-orange",
-    color: "text-orange-400",
-    iconBg: "bg-orange-500/12",
-    iconBorder: "border-orange-500/20",
-    spotlightColor: "rgba(249,115,22,0.12)",
-    borderHover: "rgba(249,115,22,0.35)",
+    icon: Cloud,
+    title: "DevOps & Cloud",
+    counter: "04",
+    colorClass: "text-violet-400",
+    borderHover: "hover:border-violet-400/40",
+    iconBg: "bg-violet-400/10",
+    iconHover: "group-hover:bg-violet-400 group-hover:text-violet-950",
+    spotlight: "rgba(167, 139, 250, 0.06)",
+    chips: [
+      { label: "Docker", cls: "chip-violet" },
+      { label: "Vercel", cls: "chip-violet" },
+      { label: "Railway", cls: "chip-violet" },
+      { label: "GitHub Actions", cls: "chip-pink" },
+      { label: "PostgreSQL (PG)", cls: "chip-violet" },
+      { label: "Turbo Repo", cls: "chip-pink" },
+    ],
+    desc: "Zero-downtime deployments, CI/CD pipelines, and cloud-native architecture.",
   },
 ];
 
-function FeatureCard({ feat, i }: { feat: typeof FEATURES[0]; i: number }) {
+function CategoryCard({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const Icon = feat.icon;
-
-  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent<HTMLDivElement>) {
-    const { left, top } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  }
-
-  const spotlightBg = useMotionTemplate`radial-gradient(280px circle at ${mouseX}px ${mouseY}px, ${feat.spotlightColor}, transparent 75%)`;
+  const spotlightBg = useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, ${cat.spotlight}, transparent 75%)`;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      onMouseMove={onMouseMove}
-      className="group relative rounded-2xl overflow-hidden cursor-default"
-      style={{
-        background: "linear-gradient(145deg, rgba(12,16,24,0.95), rgba(8,11,20,0.8))",
-        border: "1px solid rgba(255,255,255,0.07)",
-        transition: "border-color 300ms ease, box-shadow 300ms ease, transform 200ms ease",
+      transition={{ delay: index * 0.1 }}
+      onMouseMove={(e) => {
+        const { left, top } = e.currentTarget.getBoundingClientRect();
+        mouseX.set(e.clientX - left);
+        mouseY.set(e.clientY - top);
       }}
-      whileHover={{
-        y: -3,
-        boxShadow: "0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px " + feat.borderHover,
-        borderColor: feat.borderHover,
-      }}
+      className={`group relative p-7 rounded-2xl bg-[#0f172a] border border-[#1e293b] transition-all duration-300 ${cat.borderHover} overflow-hidden`}
     >
       {/* Mouse spotlight */}
-      <motion.div
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{ background: spotlightBg }}
-      />
+      <motion.div className="pointer-events-none absolute inset-0 rounded-2xl" style={{ background: spotlightBg }} />
 
-      {/* Top accent line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{ background: `linear-gradient(90deg, transparent, ${feat.borderHover}, transparent)` }}
-      />
+      {/* Counter */}
+      <div className="absolute top-5 right-5 font-mono text-xs text-slate-700">{cat.counter}</div>
 
-      <div className="relative p-6">
-        {/* Icon */}
-        <motion.div
-          className={`w-12 h-12 rounded-xl ${feat.iconBg} border ${feat.iconBorder} flex items-center justify-center mb-5`}
-          whileHover={{ scale: 1.08, rotate: 3 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
-        >
-          <Icon className={`w-5 h-5 ${feat.color}`} />
-        </motion.div>
+      {/* Icon */}
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${cat.iconBg} ${cat.colorClass} transition-all duration-300 ${cat.iconHover}`}>
+        <cat.icon size={22} />
+      </div>
 
-        {/* Title + badge */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <h3 className="text-white font-semibold text-base leading-snug">{feat.title}</h3>
-          <span className={`${feat.badgeClass} shrink-0 text-[10px]`}>{feat.badge}</span>
-        </div>
+      {/* Title */}
+      <h3 className={`text-lg font-bold mb-2 ${cat.colorClass}`}>{cat.title}</h3>
+      <p className="text-sm text-slate-500 mb-5 leading-relaxed">{cat.desc}</p>
 
-        {/* Description */}
-        <p className="text-white/45 text-sm leading-relaxed">{feat.description}</p>
-
-        {/* Bottom arrow */}
-        <div className="mt-4 flex items-center gap-1.5 text-xs text-white/0 group-hover:text-white/40 transition-colors duration-300">
-          <span className={`${feat.color} text-[11px] font-medium`}>Learn more</span>
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </div>
+      {/* Chips */}
+      <div className="flex flex-wrap gap-1.5">
+        {cat.chips.map(({ label, cls }) => (
+          <span key={label} className={`chip ${cls}`}>{label}</span>
+        ))}
       </div>
     </motion.div>
   );
@@ -162,33 +127,28 @@ function FeatureCard({ feat, i }: { feat: typeof FEATURES[0]; i: number }) {
 
 export function FeaturesGrid() {
   return (
-    <section className="py-28 px-4 sm:px-6 relative overflow-hidden">
-      {/* Background blobs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-brand-500/[0.04] blur-3xl pointer-events-none" />
+    <section className="py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <div className="section-label mb-3">01 / Stack</div>
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight">
+              Technical <span className="gradient-text">Arsenal</span>
+            </h2>
+            <p className="mt-4 text-slate-400 max-w-xl leading-relaxed">
+              Four pillars of my engineering practice — the tools I reach for when building
+              production systems from scratch.
+            </p>
+          </div>
+          <a href="/about" className="text-sm font-mono text-emerald-400 hover:underline whitespace-nowrap">
+            View full skill set →
+          </a>
+        </div>
 
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="badge-blue mb-4 inline-block">Platform Features</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 leading-tight">
-            Everything Web3{" "}
-            <span className="gradient-text">in One Platform</span>
-          </h2>
-          <p className="text-white/45 mt-5 max-w-2xl mx-auto text-lg">
-            Production-ready DeFi, NFTs, and DAO governance — all backed by
-            audited Solidity contracts and a high-performance NestJS API.
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {FEATURES.map((feat, i) => (
-            <FeatureCard key={feat.title} feat={feat} i={i} />
-          ))}
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {CATEGORIES.map((cat, i) => <CategoryCard key={cat.title} cat={cat} index={i} />)}
         </div>
       </div>
     </section>
