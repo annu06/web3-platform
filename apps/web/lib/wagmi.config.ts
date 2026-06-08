@@ -3,7 +3,7 @@ import { mainnet, sepolia, polygon, arbitrum, base, optimism } from "wagmi/chain
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "";
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "00000000000000000000000000000000";
 
 export const wagmiConfig = getDefaultConfig({
   appName:     "Web3 Platform",
