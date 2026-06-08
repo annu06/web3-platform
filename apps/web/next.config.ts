@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  outputFileTracingRoot: path.join(__dirname, "../../"),
   images: {
     domains: ["ipfs.io", "gateway.pinata.cloud", "cloudflare-ipfs.com"],
     formats: ["image/avif", "image/webp"],
