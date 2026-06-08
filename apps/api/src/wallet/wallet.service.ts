@@ -6,15 +6,17 @@ import { mainnet } from "viem/chains";
 
 @Injectable()
 export class WalletService {
-  private readonly client = createPublicClient({
-    chain:     mainnet,
-    transport: http(this.config.get("MAINNET_RPC_URL")),
-  });
+  private readonly client;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
-  ) {}
+  ) {
+    this.client = createPublicClient({
+      chain:     mainnet,
+      transport: http(this.config.get("MAINNET_RPC_URL")),
+    });
+  }
 
   async getBalance(address: `0x${string}`) {
     const wei = await this.client.getBalance({ address });
