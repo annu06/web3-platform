@@ -63,3 +63,4 @@ infra/nginx/ssl/
 infra/postgres/data/
 
 .vercel
+.env*

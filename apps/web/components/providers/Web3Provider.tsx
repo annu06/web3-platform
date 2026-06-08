@@ -4,7 +4,6 @@ import React from "react";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "next-themes";
 import { wagmiConfig } from "@/lib/wagmi.config";
 import { Toaster } from "@/components/ui/Toaster";
@@ -50,9 +49,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             {children}
             <Toaster />
           </RainbowKitProvider>
-          {process.env.NODE_ENV === "development" && (
-            <ReactQueryDevtools initialIsOpen={false} />
-          )}
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
