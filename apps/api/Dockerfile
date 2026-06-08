@@ -24,6 +24,8 @@ COPY package.json pnpm-workspace.yaml     ./
 COPY apps/api                             ./apps/api
 
 WORKDIR /app/apps/api
+# Remove raw .ts source files from ox (viem dep) that cause TS2322 during nest build
+RUN find /app/node_modules/ox -name "*.ts" ! -name "*.d.ts" -delete 2>/dev/null || true
 RUN npx prisma generate && pnpm build
 
 # ──────────── Stage 3: production ──────
