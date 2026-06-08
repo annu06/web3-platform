@@ -9,7 +9,7 @@ RUN npm install -g pnpm@9
 COPY package.json pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/package.json
 
-RUN pnpm install --frozen-lockfile --filter @web3/web
+RUN pnpm install --no-frozen-lockfile --filter @web3/web
 
 # ──────────── Stage 2: build ───────────
 FROM node:20-alpine AS builder

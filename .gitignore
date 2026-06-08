@@ -61,3 +61,5 @@ apps/web/out/
 # ─── Docker volumes ─────────────────────────────────
 infra/nginx/ssl/
 infra/postgres/data/
+
+.vercel
