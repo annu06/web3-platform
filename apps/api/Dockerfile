@@ -1,45 +1,39 @@
 # Build context: monorepo root (required for pnpm workspace hoisting)
 
-# ──────────── Stage 1: deps ────────────
-FROM node:20-alpine AS deps
-WORKDIR /app
-
-RUN npm install -g pnpm@9
-
-# Copy workspace manifests + lockfile for better layer caching
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY apps/api/package.json ./apps/api/package.json
-
-RUN pnpm install --frozen-lockfile --filter @web3/api
-
-# ──────────── Stage 2: build ───────────
+# ──────────── Stage 1: deps + build ────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm@9
 
-COPY --from=deps /app/node_modules        ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY package.json pnpm-workspace.yaml     ./
-COPY apps/api                             ./apps/api
+# Copy everything needed for install and build
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/api ./apps/api
 
-WORKDIR /app/apps/api
-# Remove raw .ts source files from ox (viem dep) — ships .ts that causes TS2322
+# Install deps
+RUN pnpm install --frozen-lockfile --filter @web3/api
+
+# Remove ox raw .ts files that cause TS2322
 RUN find /app/node_modules/.pnpm -path "*ox@*" -name "*.ts" ! -name "*.d.ts" -delete 2>/dev/null || true
+
+# Generate Prisma client and build
+WORKDIR /app/apps/api
 RUN npx prisma generate && pnpm build
 
-# ──────────── Stage 3: production ──────
+# Use pnpm deploy to create a self-contained output (no symlinks)
+WORKDIR /app
+RUN pnpm deploy --filter @web3/api --prod /app/deployed
+
+# ──────────── Stage 2: production ──────
 FROM node:20-alpine AS production
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NODE_PATH=/app/node_modules
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-COPY --from=builder --chown=appuser:appgroup /app/apps/api/dist        ./dist
-COPY --from=builder --chown=appuser:appgroup /app/node_modules         ./node_modules
-COPY --from=builder --chown=appuser:appgroup /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=builder --chown=appuser:appgroup /app/deployed/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/apps/api/dist         ./dist
 COPY --from=builder --chown=appuser:appgroup /app/apps/api/prisma       ./prisma
 
 USER appuser
