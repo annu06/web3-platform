@@ -33,11 +33,13 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=builder --chown=appuser:appgroup /app/apps/api/dist        ./dist
-COPY --from=builder --chown=appuser:appgroup /app/apps/api/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/node_modules         ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder --chown=appuser:appgroup /app/apps/api/prisma       ./prisma
 
 USER appuser
