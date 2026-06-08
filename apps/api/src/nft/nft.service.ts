@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { ConfigService }  from "@nestjs/config";
 import { PrismaService }  from "../prisma/prisma.service";
-import * as FormData      from "form-data";
+import FormData from "form-data";
 import axios              from "axios";
 
 @Injectable()
