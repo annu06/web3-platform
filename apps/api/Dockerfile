@@ -4,7 +4,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-RUN npm install -g pnpm@9
+RUN apk add --no-cache openssl && npm install -g pnpm@9
 
 # Copy everything needed for install and build
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
@@ -31,6 +31,8 @@ RUN npx prisma@5 generate --schema=./prisma/schema.prisma
 # ──────────── Stage 2: production ──────
 FROM node:20-alpine AS production
 WORKDIR /app
+
+RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production
 
